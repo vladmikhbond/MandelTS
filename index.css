@@ -1,0 +1,47 @@
+#canvas1 {
+    cursor: crosshair;
+    border: thin solid;
+}
+
+input {
+    height: 18px;
+}
+
+.panel {
+    border: thin gray solid;
+    display: inline;
+    position: relative;
+    margin-right: 5px;
+    top: 4px;
+    padding-top: 5px;
+}
+
+#iterText {
+    height: 16px;
+    width: 40px;
+    text-align: right;
+    padding-right: 3px;
+}
+
+#iter {
+    color: gray;
+    font-size: small;
+    width: 40px;
+    display: inline-block;
+    text-align: right;
+
+}
+#exportText, #importText {
+    display: none;
+    width: 600px;
+    font-size: small;
+}
+
+h3 {
+     color: darkred;
+}
+
+#power, #delta {
+    cursor: pointer;
+    color: red;
+}
