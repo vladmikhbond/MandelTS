@@ -9,11 +9,15 @@ export default class View
 
     constructor(model: Model) {
         this.model = model;
+        
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        this.ctx = this.canvas.getContext("2d")!;
-        this.ctx.translate(0, this.canvas.height);
-        this.ctx.scale(1, -1);
         this.pixels = new Uint8ClampedArray(this.canvas.width * this.canvas.height * 4); // RGBA
+        
+        this.ctx = this.canvas.getContext("2d")!;
+        // transform
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+        this.ctx.scale(1, -1);
+        
     }
 
     doImage() { 
@@ -31,9 +35,21 @@ export default class View
         return new ImageData(this.pixels, this.canvas.width, this.canvas.height);
     }
 
-    draw() {     
-        this.doImage();
-        
+    drawGrayRect(canvX: number, canvY: number) {
+        // retransform
+        canvX -= this.canvas.width / 2;
+        canvY = this.canvas.height / 2 - canvY;
+
+        let w = this.canvas.width / this.model.SCALE;
+        let h = this.canvas.height / this.model.SCALE; 
+        let x = canvX - w / 2;
+        let y = canvY - h / 2;
+        this.ctx.strokeStyle = 'gray';
+        this.ctx.strokeRect(x, y, w, h);
+    }
+
+    draw(doImage = true) {     
+        if (doImage) this.doImage(); 
         this.ctx.putImageData(this.doImage(), 0, 0);
     }
 

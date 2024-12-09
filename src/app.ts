@@ -4,7 +4,7 @@ import View from "./View.js";
 import Controller from "./Controller.js";
 
 
-const model = new Model(new Rect(-2, -2, 4, 4));
+const model = new Model(new Rect(-2, -1, 3, 2));
 model.fillDeeps();
 const view = new View(model);
 new Controller(model, view);
