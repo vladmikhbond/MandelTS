@@ -40,8 +40,8 @@ export default class View
         canvX -= this.canvas.width / 2;
         canvY = this.canvas.height / 2 - canvY;
 
-        let w = this.canvas.width / this.model.SCALE;
-        let h = this.canvas.height / this.model.SCALE; 
+        let w = this.canvas.width / this.model.ZOOM_STEP;
+        let h = this.canvas.height / this.model.ZOOM_STEP; 
         let x = canvX - w / 2;
         let y = canvY - h / 2;
         this.ctx.strokeStyle = 'gray';

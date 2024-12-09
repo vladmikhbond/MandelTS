@@ -11,7 +11,6 @@ export default class Controller
         // canvas_click
         view.canvas.addEventListener('click', (e: MouseEvent) => {
             model.scaleWindow(e.offsetX, e.offsetY);
-            model.fillDeeps();
             view.draw();
         });
     
