@@ -1,11 +1,11 @@
+import {glo} from "./globals.js";
 import Rect from "./Rect.js";
-
 export default class Model 
 {
     ZOOM_STEP = 10;
+    DEEP_LIMIT = 1000;
     
     scope: Rect;
-    canvas: HTMLCanvasElement;
     
     deeps: number[];
     // initial scale
@@ -13,41 +13,43 @@ export default class Model
      
     constructor(init: Rect) {
         this.scope = init;
-        this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        this.K0 = init.w / this.canvas.width;
-        this.deeps = new Array(this.canvas.width * this.canvas.height);  
+
+        this.K0 = init.w / glo.canvas.width;
+        this.deeps = new Array(glo.canvas.width * glo.canvas.height);  
+
+        this.fillDeeps();
     }
     // obtained scale
-    get K() { return this.scope.w / this.canvas.width; }
+    get K() { return this.scope.w / glo.canvas.width; }
     
 
     private fillDeeps() { 
         let k = this.K;       
-        for (let y = 0; y < this.canvas.height; y++) {
+        for (let y = 0; y < glo.canvas.height; y++) {
             let windY = y * k + this.scope.y;
-            for (let x = 0; x < this.canvas.width; x++) {
+            for (let x = 0; x < glo.canvas.width; x++) {
                 let windX = x * k + this.scope.x;             
-                this.deeps[y * this.canvas.width + x] = Model.countDeep(windX, windY);
+                this.deeps[y * glo.canvas.width + x] = this.countDeep(windX, windY);
             }
         }
     }
 
 
-    private static countDeep(wx: number, wy: number, limit = 1000) {
+    countDeep(wx: number, wy: number) {
         let x = wx, y = wy;
-        for (let i = 0; i < limit; i++) {
+        for (let i = 0; i < this.DEEP_LIMIT; i++) {
             [x, y] = [x * x - y * y + wx, 2 * x * y + wy];
             if ((x * x) + (y * y) > 4)
                 return i;
         }
-        return limit;
+        return this.DEEP_LIMIT;
     }
 
-    scaleWindow(canvX: number, canvY: number) { 
+    scaleWindow(canvX: number, canvY: number, zoom = this.ZOOM_STEP) { 
         let centerX = canvX * this.K + this.scope.x;   
         let centerY = canvY * this.K + this.scope.y;
-        this.scope.w /= this.ZOOM_STEP;
-        this.scope.h /= this.ZOOM_STEP;
+        this.scope.w /= zoom;
+        this.scope.h /= zoom;
         this.scope.x = centerX - this.scope.w / 2;
         this.scope.y = centerY - this.scope.h / 2;
 
