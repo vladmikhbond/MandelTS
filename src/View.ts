@@ -5,10 +5,14 @@ export default class View
     model: Model;
     canvas: HTMLCanvasElement;
     pixels: Uint8ClampedArray;
+    ctx: CanvasRenderingContext2D;
 
     constructor(model: Model) {
         this.model = model;
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
+        this.ctx = this.canvas.getContext("2d")!;
+        this.ctx.translate(0, this.canvas.height);
+        this.ctx.scale(1, -1);
         this.pixels = new Uint8ClampedArray(this.canvas.width * this.canvas.height * 4); // RGBA
     }
 
@@ -29,8 +33,8 @@ export default class View
 
     draw() {     
         this.doImage();
-        const ctx = this.canvas.getContext("2d")!;
-        ctx.putImageData(this.doImage(), 0, 0);
+        
+        this.ctx.putImageData(this.doImage(), 0, 0);
     }
 
 }

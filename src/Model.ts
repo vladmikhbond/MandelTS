@@ -1,28 +1,28 @@
 import Rect from "./Rect.js";
 
 export default class Model {
-    world: Rect;
+    window: Rect;
     width: number;
     height: number
     deeps: number[];
 
     constructor(init: Rect) {
-        this.world = init;
+        this.window = init;
         let canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.width = canvas.width;
         this.height = canvas.height;
         this.deeps = new Array(canvas.width * canvas.height);
     }
 
-    fill() {
-        const Kx = this.world.w / this.width; 
-        const Ky = this.world.h / this.height; 
+    fillDeeps() {
+        const Kx = this.window.w / this.width; 
+        const Ky = this.window.h / this.height; 
         
         for (let y = 0; y < this.height; y++) {
-            let worldY = y * Ky + this.world.y;
+            let windY = y * Ky + this.window.y;
             for (let x = 0; x < this.width; x++) {
-                let worldX = x * Kx + this.world.x;             
-                this.deeps[y * this.width + x] = Model.countDeep(worldX, worldY);
+                let windX = x * Kx + this.window.x;             
+                this.deeps[y * this.width + x] = Model.countDeep(windX, windY);
             }
         }
     }
@@ -38,6 +38,16 @@ export default class Model {
         return limit;
     }
 
+    scaledWindow(canvX: number, canvY: number, scale = 2) {
+        const Kx = this.window.w / this.width; 
+        const Ky = this.window.h / this.height; 
+        let centerX = canvX * Kx + this.window.x;   
+        let centerY = canvY * Ky + this.window.y;
+        this.window.w /= scale;
+        this.window.h /= scale;
+        this.window.x = centerX - this.window.w / 2;
+        this.window.y = centerY - this.window.h / 2;      
+    }
 
 
 
