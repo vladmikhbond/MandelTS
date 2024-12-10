@@ -56,8 +56,10 @@ export default class View
     draw(doImage=true) {     
         if (doImage) this.doImage(); 
         this.ctx.putImageData(this.doImage(), 0, 0);
+        
         // html
-        glo.scaleSpan.innerHTML = `1 : ${(this.model.K0 / this.model.scale).toFixed(0)}`;
+        let log = Math.log10(this.model.K0 / this.model.scale).toFixed(0)
+        glo.scaleSpan.innerHTML = `1 : 10<sup>${log}</sup>`;
     }
 
     drawGrayRect(canvX: number, canvY: number) {
