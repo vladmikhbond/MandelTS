@@ -3,13 +3,15 @@ import Rect from "./Rect.js";
 export default class Model 
 {
     ZOOM_STEP = 10;
-    DEEP_LIMIT = 1000;
-    
-    scope: Rect;
+    depthLimit = 100;
+    maxDepth = this.depthLimit;
+    minDepth = 0;
+
+    scope: Rect;  
     
     deeps: number[];
-    // initial scale
-    K0: number;
+    
+    K0: number;    // initial scale
      
     constructor(init: Rect) {
         this.scope = init;
@@ -19,17 +21,24 @@ export default class Model
 
         this.fillDeeps();
     }
+
     // obtained scale
     get K() { return this.scope.w / glo.canvas.width; }
     
+    getDeep(canvX: number, canvY: number) {
+        return this.deeps[canvY * glo.canvas.width + canvX] ?? 0;
+    }
 
     private fillDeeps() { 
         let k = this.K;       
         for (let y = 0; y < glo.canvas.height; y++) {
             let windY = y * k + this.scope.y;
             for (let x = 0; x < glo.canvas.width; x++) {
-                let windX = x * k + this.scope.x;             
-                this.deeps[y * glo.canvas.width + x] = this.countDeep(windX, windY);
+                let windX = x * k + this.scope.x; 
+                let deep = this.countDeep(windX, windY);            
+                this.deeps[y * glo.canvas.width + x] = deep;
+                if (this.minDepth > deep) this.minDepth = deep;
+                if (this.maxDepth < deep) this.maxDepth = deep;          
             }
         }
     }
@@ -37,12 +46,12 @@ export default class Model
 
     countDeep(wx: number, wy: number) {
         let x = wx, y = wy;
-        for (let i = 0; i < this.DEEP_LIMIT; i++) {
+        for (let i = 0; i < this.depthLimit; i++) {
             [x, y] = [x * x - y * y + wx, 2 * x * y + wy];
             if ((x * x) + (y * y) > 4)
                 return i;
         }
-        return this.DEEP_LIMIT;
+        return this.depthLimit;
     }
 
     scaleWindow(canvX: number, canvY: number, zoom = this.ZOOM_STEP) { 

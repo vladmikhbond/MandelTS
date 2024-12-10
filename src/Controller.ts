@@ -1,4 +1,4 @@
-import {glo} from "./globals.js";
+import {glo, colors, parseColor} from "./globals.js";
 import Model from "./Model.js";
 import View from "./View.js";
 
@@ -26,16 +26,44 @@ export default class Controller
             if (D < e.offsetX && e.offsetX < glo.canvas.width - D &&
                 D < e.offsetY && e.offsetY < glo.canvas.height - D) {
                 view.drawGrayRect(e.offsetX, e.offsetY);
-            }        
+            }
+
+            glo.deepSpan.innerHTML = model.getDeep(e.offsetX, e.offsetY).toString();      
         });
     
         // deepText_change
         glo.deepText.addEventListener('change', () => {
-            model.DEEP_LIMIT = +glo.deepText.value;
+            model.depthLimit = +glo.deepText.value;
             model.scaleWindow(offsetX, offsetY, 1);
             view.draw();
         });
 
+        // 
+        glo.darkColor.addEventListener('change', () => {
+            colors.dark = parseColor(glo.darkColor.value);
+            view.draw();
+        });
+
+        // 
+        glo.lightColor.addEventListener('change', () => {
+            colors.light = parseColor(glo.lightColor.value);
+            view.draw();
+        });
+
+        // 
+        glo.thirdColor.addEventListener('change', () => {
+            colors.third = parseColor(glo.thirdColor.value);
+            view.draw();
+        });
+
+        for (const t of glo.themes) {
+            t.addEventListener('click', (e) => {
+                view.themeMode = +(e.target as HTMLInputElement).value;
+                view.draw();
+            });
+        }
+        
+        
 
     }
 
