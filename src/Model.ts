@@ -3,9 +3,11 @@ import Rect from "./Rect.js";
 export default class Model 
 {
     ZOOM_STEP = 10;
-    depthLimit = 10;
+    depthLimit = 1000;
     maxDepth = this.depthLimit;
     minDepth = 0;
+    avgDepth = 0;
+    
 
     scope: Rect;  
     
@@ -24,24 +26,29 @@ export default class Model
 
     // obtained scale
     get scale() { return this.scope.w / glo.canvas.width; }
+    //get relativeScale() { return this.scale * this.K0; }
+    
     
     getDeep(canvX: number, canvY: number) {
         return this.deeps[canvY * glo.canvas.width + canvX] ?? 0;
     }
 
     private fillDeeps() {
-        this.minDepth = this.maxDepth = this.countDeep(0, 0);  
+        this.minDepth = this.maxDepth = this.countDeep(0, 0);
+        this.avgDepth = 0;
         let k = this.scale;       
         for (let y = 0; y < glo.canvas.height; y++) {
             let windY = y * k + this.scope.y;
             for (let x = 0; x < glo.canvas.width; x++) {
                 let windX = x * k + this.scope.x; 
-                let deep = this.countDeep(windX, windY);            
-                this.deeps[y * glo.canvas.width + x] = deep;
-                if (this.minDepth > deep) this.minDepth = deep;
-                if (this.maxDepth < deep) this.maxDepth = deep;          
+                let depth = this.countDeep(windX, windY);            
+                this.deeps[y * glo.canvas.width + x] = depth;
+                if (this.minDepth > depth) this.minDepth = depth;
+                if (this.maxDepth < depth) this.maxDepth = depth; 
+                this.avgDepth += depth;         
             }
         }
+        this.avgDepth /= this.deeps.length;
     }
 
 

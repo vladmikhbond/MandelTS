@@ -8,9 +8,8 @@
 <h3>Mandelbrot Scope</h3>
     <canvas id="canvas" width="600" height="400"></canvas>
     <div>
-        <button id="resetButton">Reset</button>
-        <button id="exportButton">Exp</button>
-        <button id="importButton">Imp</button>
+        <button id="exportButton" title="Export"> ▼ </button>
+        <button id="importButton" title="Import"> ▲ </button>
         <div class="panel">
             <input type="radio" name="themes" value="0" title="Two Colors" >
             <input type="radio" name="themes" value="1" title="Zebra">
@@ -22,6 +21,7 @@
         <input type="color" id="thirdColor" title="Third">
         <input type="text" id="deepText" title="Infinity Depts" >
         <span id="deepSpan"></span>
+        <span id="scaleSpan"></span>
     </div>
     <div style="margin-top: 8px">
         <input type="text" id="exportText" >

@@ -1,4 +1,4 @@
-import {glo, colors, doColor} from "./globals.js";
+import {glo, colors, rgb2str} from "./globals.js";
 import Model from "./Model.js";
 
 enum ThemeMode {
@@ -26,9 +26,9 @@ export default class View
         this.ctx.translate(glo.canvas.width / 2, glo.canvas.height / 2);
         this.ctx.scale(1, -1);
         // setup init.html
-        glo.darkColor.value = doColor(colors.dark);
-        glo.lightColor.value = doColor(colors.light);
-        glo.thirdColor.value = doColor(colors.third);
+        glo.darkColor.value = rgb2str(colors.dark);
+        glo.lightColor.value = rgb2str(colors.light);
+        glo.thirdColor.value = rgb2str(colors.third);
         glo.themes[this.themeMode].checked = true;
         glo.deepText.value = model.depthLimit.toFixed(0);
         
@@ -53,6 +53,13 @@ export default class View
         return new ImageData(this.pixels, glo.canvas.width, glo.canvas.height);
     }
 
+    draw(doImage=true) {     
+        if (doImage) this.doImage(); 
+        this.ctx.putImageData(this.doImage(), 0, 0);
+        // html
+        glo.scaleSpan.innerHTML = `1 : ${(this.model.K0 / this.model.scale).toFixed(0)}`;
+    }
+
     drawGrayRect(canvX: number, canvY: number) {
         // retransform
         canvX -= glo.canvas.width / 2;
@@ -66,16 +73,11 @@ export default class View
         this.ctx.strokeRect(x, y, w, h);
     }
 
-    draw(doImage = true) {     
-        if (doImage) this.doImage(); 
-        this.ctx.putImageData(this.doImage(), 0, 0);
-    }
-
 //#region Themes ----------------------
  // palettes:   https://color.romanuke.com/czvetovaya-palitra-4517/
 
     blackWhite(depth: number) {
-        return depth > (this.model.maxDepth - this.model.minDepth) / 2 ? colors.dark : colors.light ;
+        return depth > this.model.avgDepth ? colors.dark : colors.light ;
     }
 
     zebra(depth: number) {

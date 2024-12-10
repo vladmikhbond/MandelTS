@@ -1,4 +1,4 @@
-import {glo, colors, parseColor} from "./globals.js";
+import {glo, colors, str2rgb} from "./globals.js";
 import Model from "./Model.js";
 import View from "./View.js";
 
@@ -40,19 +40,19 @@ export default class Controller
 
         // 
         glo.darkColor.addEventListener('change', () => {
-            colors.dark = parseColor(glo.darkColor.value);
+            colors.dark = str2rgb(glo.darkColor.value);
             view.draw();
         });
 
         // 
         glo.lightColor.addEventListener('change', () => {
-            colors.light = parseColor(glo.lightColor.value);
+            colors.light = str2rgb(glo.lightColor.value);
             view.draw();
         });
 
         // 
         glo.thirdColor.addEventListener('change', () => {
-            colors.third = parseColor(glo.thirdColor.value);
+            colors.third = str2rgb(glo.thirdColor.value);
             view.draw();
         });
 

@@ -2,6 +2,7 @@ export const glo = {
     canvas: <HTMLCanvasElement>document.getElementById('canvas'),
     deepText: <HTMLInputElement>document.getElementById('deepText'),
     deepSpan: <HTMLSpanElement>document.getElementById('deepSpan'),
+    scaleSpan: <HTMLSpanElement>document.getElementById('scaleSpan'),
     darkColor:  <HTMLInputElement>document.getElementById('darkColor'),
     lightColor:  <HTMLInputElement>document.getElementById('lightColor'),
     thirdColor:  <HTMLInputElement>document.getElementById('thirdColor'),
@@ -16,7 +17,7 @@ export const colors = {
 };
 
 // '#rrggbb' => [r, g, b]
-export function parseColor(color: string): number[] {
+export function str2rgb(color: string): number[] {
     let r = parseInt((color.slice(1, 3)), 16);
     let g = parseInt((color.slice(3, 5)), 16);
     let b = parseInt((color.slice(5, 7)), 16);
@@ -24,6 +25,6 @@ export function parseColor(color: string): number[] {
 }
 
 // [r, g, b] => '#rrggbb'
-export function doColor(arr: number[]): string {
+export function rgb2str(arr: number[]): string {
     return '#' + arr.map(x => ('0' + x.toString(16)).slice(-2)).join('');
 }

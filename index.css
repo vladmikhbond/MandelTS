@@ -23,13 +23,16 @@ input {
     padding-right: 3px;
 }
 
-#iter {
+#deepSpan{
     color: gray;
     font-size: small;
     width: 40px;
     display: inline-block;
     text-align: right;
+}
 
+#scaleSpan {
+    font-size: small;
 }
 #exportText, #importText {
     display: none;
