@@ -3,7 +3,7 @@ import Rect from "./Rect.js";
 export default class Model 
 {
     ZOOM_STEP = 10;
-    depthLimit = 100;
+    depthLimit = 10;
     maxDepth = this.depthLimit;
     minDepth = 0;
 
@@ -23,14 +23,15 @@ export default class Model
     }
 
     // obtained scale
-    get K() { return this.scope.w / glo.canvas.width; }
+    get scale() { return this.scope.w / glo.canvas.width; }
     
     getDeep(canvX: number, canvY: number) {
         return this.deeps[canvY * glo.canvas.width + canvX] ?? 0;
     }
 
-    private fillDeeps() { 
-        let k = this.K;       
+    private fillDeeps() {
+        this.minDepth = this.maxDepth = this.countDeep(0, 0);  
+        let k = this.scale;       
         for (let y = 0; y < glo.canvas.height; y++) {
             let windY = y * k + this.scope.y;
             for (let x = 0; x < glo.canvas.width; x++) {
@@ -55,8 +56,8 @@ export default class Model
     }
 
     scaleWindow(canvX: number, canvY: number, zoom = this.ZOOM_STEP) { 
-        let centerX = canvX * this.K + this.scope.x;   
-        let centerY = canvY * this.K + this.scope.y;
+        let centerX = canvX * this.scale + this.scope.x;   
+        let centerY = canvY * this.scale + this.scope.y;
         this.scope.w /= zoom;
         this.scope.h /= zoom;
         this.scope.x = centerX - this.scope.w / 2;
