@@ -2,7 +2,7 @@ import {glo} from "./globals.js";
 import Rect from "./Rect.js";
 export default class Model 
 {
-    ZOOM_STEP = 10;
+    ZOOM_STEP = 10**0.5;
     depthLimit = 1000;
     maxDepth = this.depthLimit;
     minDepth = 0;
@@ -80,5 +80,14 @@ export default class Model
         this.scope = <Rect>JSON.parse(line);
         this.setDepths();
     }
+
+    shift(dCanvX: number, dCanvY: number) {
+        let k = this.scale;
+        this.scope.x += dCanvX * k;
+        this.scope.y += dCanvY * k;
+        this.setDepths();
+    }
+
+
 
 } 

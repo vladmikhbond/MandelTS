@@ -8,10 +8,11 @@ export default class Controller
 
     constructor(model: Model, view: View) 
     {
-        let offsetX = glo.canvas.width / 2;
-        let offsetY = glo.canvas.height / 2;
-        
+        let mousPos = {x: 0, y: 0 };
+
         glo.canvas.addEventListener('mousedown', (e: MouseEvent) => {
+            mousPos.x = e.offsetX;
+            mousPos.y = e.offsetY; 
         });
 
         // canvas_mousemove
@@ -28,8 +29,14 @@ export default class Controller
     
         // canvas_mouseup
         glo.canvas.addEventListener('mouseup', (e: MouseEvent) => {
-            let zoom = e.altKey ? 1 / model.ZOOM_STEP : model.ZOOM_STEP
-            model.scaleWindow(e.offsetX, e.offsetY, zoom);
+            if (e.offsetX == mousPos.x) {
+                let zoom = e.altKey ? 1 / model.ZOOM_STEP : model.ZOOM_STEP
+                model.scaleWindow(e.offsetX, e.offsetY, zoom);
+            } else {
+                model.shift(mousPos.x - e.offsetX, mousPos.y - e.offsetY);
+                model.setDepths();
+            }
+
             view.draw();
         });
     
