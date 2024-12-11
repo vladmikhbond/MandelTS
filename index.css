@@ -5,6 +5,12 @@
 
 input {
     height: 18px;
+    
+}
+
+input[type="color"] {
+    width: 30px;
+    height:22px;
 }
 
 .panel {
@@ -34,8 +40,8 @@ input {
 #scaleSpan {
     font-size: small;
 }
-#exportText, #importText {
-    display: none;
+#exportText {
+    /* display: none; */
     width: 600px;
     font-size: small;
 }

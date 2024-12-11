@@ -1,3 +1,4 @@
 // TODO
-// scale show
-// export-import
+
+animation when image increases
+shift scope by mouse

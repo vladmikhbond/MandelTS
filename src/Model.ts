@@ -11,7 +11,7 @@ export default class Model
 
     scope: Rect;  
     
-    deeps: number[];
+    depths: number[];
     
     K0: number;    // initial scale
      
@@ -19,21 +19,20 @@ export default class Model
         this.scope = init;
 
         this.K0 = init.w / glo.canvas.width;
-        this.deeps = new Array(glo.canvas.width * glo.canvas.height);  
+        this.depths = new Array(glo.canvas.width * glo.canvas.height);  
 
-        this.fillDeeps();
+        this.setDepths();
     }
 
     // obtained scale
     get scale() { return this.scope.w / glo.canvas.width; }
-    //get relativeScale() { return this.scale * this.K0; }
     
     
     getDeep(canvX: number, canvY: number) {
-        return this.deeps[canvY * glo.canvas.width + canvX] ?? 0;
+        return this.depths[canvY * glo.canvas.width + canvX] ?? 0;
     }
 
-    private fillDeeps() {
+    setDepths() {
         this.minDepth = this.maxDepth = this.countDeep(0, 0);
         this.avgDepth = 0;
         let k = this.scale;       
@@ -42,13 +41,13 @@ export default class Model
             for (let x = 0; x < glo.canvas.width; x++) {
                 let windX = x * k + this.scope.x; 
                 let depth = this.countDeep(windX, windY);            
-                this.deeps[y * glo.canvas.width + x] = depth;
+                this.depths[y * glo.canvas.width + x] = depth;
                 if (this.minDepth > depth) this.minDepth = depth;
                 if (this.maxDepth < depth) this.maxDepth = depth; 
                 this.avgDepth += depth;         
             }
         }
-        this.avgDepth /= this.deeps.length;
+        this.avgDepth /= this.depths.length;
     }
 
 
@@ -62,7 +61,7 @@ export default class Model
         return this.depthLimit;
     }
 
-    scaleWindow(canvX: number, canvY: number, zoom = this.ZOOM_STEP) { 
+    scaleWindow(canvX: number, canvY: number, zoom: number) { 
         let centerX = canvX * this.scale + this.scope.x;   
         let centerY = canvY * this.scale + this.scope.y;
         this.scope.w /= zoom;
@@ -70,9 +69,16 @@ export default class Model
         this.scope.x = centerX - this.scope.w / 2;
         this.scope.y = centerY - this.scope.h / 2;
 
-        this.fillDeeps();      
+        this.setDepths();      
     }
 
+    export(): string {
+        return JSON.stringify(this.scope);
+    }
 
+    import(line: string) {
+        this.scope = <Rect>JSON.parse(line);
+        this.setDepths();
+    }
 
 } 

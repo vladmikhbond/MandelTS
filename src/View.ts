@@ -41,7 +41,7 @@ export default class View
             let shift = 4 * y * glo.canvas.width;
             for (let x = 0; x < glo.canvas.width; x++) {
                 let i = shift + 4 * x;
-                let depth = this.model.deeps[i / 4];
+                let depth = this.model.depths[i / 4];
  
                 let [r, g, b] = getColor.call(this, depth); 
                 this.pixels[i] = r;       // R

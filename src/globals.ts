@@ -7,6 +7,10 @@ export const glo = {
     lightColor:  <HTMLInputElement>document.getElementById('lightColor'),
     thirdColor:  <HTMLInputElement>document.getElementById('thirdColor'),
     themes: <NodeListOf<HTMLInputElement>>document.getElementsByName("themes"),
+    exportButton: <HTMLButtonElement>document.getElementById("exportButton"),
+    importButton: <HTMLButtonElement>document.getElementById("importButton"),
+    exportText: <HTMLInputElement>document.getElementById('exportText'),
+    importText: <HTMLInputElement>document.getElementById('importText'),
 };
 
 

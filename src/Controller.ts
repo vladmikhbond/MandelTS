@@ -11,14 +11,9 @@ export default class Controller
         let offsetX = glo.canvas.width / 2;
         let offsetY = glo.canvas.height / 2;
         
-
-        // canvas_click
-        glo.canvas.addEventListener('click', (e: MouseEvent) => {
-            let zoom = e.altKey ? 1 / model.ZOOM_STEP : model.ZOOM_STEP
-            model.scaleWindow(e.offsetX, e.offsetY, zoom);
-            view.draw();
+        glo.canvas.addEventListener('mousedown', (e: MouseEvent) => {
         });
-    
+
         // canvas_mousemove
         glo.canvas.addEventListener('mousemove', (e: MouseEvent) => {
             const D = 5;
@@ -31,10 +26,17 @@ export default class Controller
             glo.deepSpan.innerHTML = model.getDeep(e.offsetX, e.offsetY).toString();      
         });
     
+        // canvas_mouseup
+        glo.canvas.addEventListener('mouseup', (e: MouseEvent) => {
+            let zoom = e.altKey ? 1 / model.ZOOM_STEP : model.ZOOM_STEP
+            model.scaleWindow(e.offsetX, e.offsetY, zoom);
+            view.draw();
+        });
+    
         // deepText_change
         glo.deepText.addEventListener('change', () => {
             model.depthLimit = +glo.deepText.value;
-            model.scaleWindow(offsetX, offsetY, 1);
+            model.setDepths();
             view.draw();
         });
 
@@ -63,7 +65,14 @@ export default class Controller
             });
         }
         
-        
+        glo.exportButton.addEventListener('click', () => {
+            glo.exportText.value = model.export();
+        }) 
+
+        glo.importButton.addEventListener('click', () => {
+            model.import(glo.exportText.value);
+            view.draw();
+        }) 
 
     }
 
