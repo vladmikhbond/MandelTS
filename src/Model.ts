@@ -32,16 +32,23 @@ export default class Model
         return this.depths[canvY * glo.canvas.width + canvX] ?? 0;
     }
 
-    private setDepths() {
+    private setDepths() 
+    {
         this.minDepth = this.maxDepth = this.depthAt(0, 0);
         this.avgDepth = 0;
         let scale = this.scale;       
-        for (let y = 0; y < glo.canvas.height; y++) {
-            let scopeY = y * scale + this.scope.y;
-            for (let x = 0; x < glo.canvas.width; x++) {
-                let scopeX = x * scale + this.scope.x; 
+        for (let canvY = 0; canvY < glo.canvas.height; canvY++) 
+        {
+            // from canv to scope
+            let scopeY = canvY * scale + this.scope.y;
+            for (let canvX = 0; canvX < glo.canvas.width; canvX++) 
+            {
+                // from canv to scope
+                let scopeX = canvX * scale + this.scope.x; 
                 let depth = this.depthAt(scopeX, scopeY);            
-                this.depths[y * glo.canvas.width + x] = depth;
+                this.depths[canvY * glo.canvas.width + canvX] = depth;
+                
+                // max min avg
                 if (this.minDepth > depth) this.minDepth = depth;
                 if (this.maxDepth < depth) this.maxDepth = depth; 
                 this.avgDepth += depth;         
@@ -51,10 +58,10 @@ export default class Model
     }
 
 
-    depthAt(x: number, y: number) {
-        let re = x, im = y;
+    depthAt(scopeX: number, scopeY: number) {
+        let re = scopeX, im = scopeY;
         for (let d = 0; d < this.depthLimit; d++) {
-            [re, im] = [re * re - im * im + x, 2 * re * im + y];
+            [re, im] = [re * re - im * im + scopeX, 2 * re * im + scopeY];
             if ((re * re) + (im * im) > 4)
                 return d;
         }
@@ -63,13 +70,15 @@ export default class Model
 
     // scale a scope & set depths matrix
     // 
-    scaleScope(canvX: number, canvY: number) { 
-        let centerX = canvX * this.scale + this.scope.x;   
-        let centerY = canvY * this.scale + this.scope.y;
+    scaleScope(canvCenterX: number, canvCenterY: number) { 
+        // from canv to scope
+        let scopeCenterX = canvCenterX * this.scale + this.scope.x;   
+        let scopeCenterY = canvCenterY * this.scale + this.scope.y;
+
         this.scope.w /= this.ZOOM;
         this.scope.h /= this.ZOOM;
-        this.scope.x = centerX - this.scope.w / 2;
-        this.scope.y = centerY - this.scope.h / 2;
+        this.scope.x = scopeCenterX - this.scope.w / 2;
+        this.scope.y = scopeCenterY - this.scope.h / 2;
 
         this.setDepths();      
     }
@@ -77,9 +86,8 @@ export default class Model
     // stranslate a scope & fill depth matrix
     // 
     translateScope(dCanvX: number, dCanvY: number) {
-        let k = this.scale;
-        this.scope.x += dCanvX * k;
-        this.scope.y += dCanvY * k;
+        this.scope.x += dCanvX * this.scale;
+        this.scope.y += dCanvY * this.scale;
 
         this.setDepths();
     }

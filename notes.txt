@@ -1,4 +1,10 @@
 // TODO
 
 animation when image increases
-shift scope by mouse
+canvas transform get out
+
+// from canvas to scope
+let scopeX = canvX * scale + this.scope.x;
+
+// from scope t o canvas
+let canvX  = (scopeX - this.scope.x) / scale 
