@@ -11,8 +11,11 @@ enum ThemeMode {
 export default class View 
 {
     model: Model;
+    ctx = glo.canvas.getContext("2d")!;
+
     pixels: Uint8ClampedArray;
-    ctx: CanvasRenderingContext2D;
+    //private img: ImageData | null = null;
+    offCanvas = new OffscreenCanvas(glo.canvas.width, glo.canvas.height)
     themeMode: ThemeMode = ThemeMode.twoColors;
 
     constructor(model: Model) {
@@ -21,11 +24,11 @@ export default class View
         glo.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.pixels = new Uint8ClampedArray(glo.canvas.width * glo.canvas.height * 4); // RGBA
         
-        this.ctx = glo.canvas.getContext("2d")!;
-        // transform
+        // transform canvas
         this.ctx.translate(glo.canvas.width / 2, glo.canvas.height / 2);
         this.ctx.scale(1, -1);
-        // setup init.html
+
+        // setup index.html
         glo.darkColor.value = rgb2str(colors.dark);
         glo.lightColor.value = rgb2str(colors.light);
         glo.thirdColor.value = rgb2str(colors.third);
@@ -34,7 +37,7 @@ export default class View
         
     }
 
-    doImage() { 
+    createImage() { 
         const getColor = [this.blackWhite, this.zebra, this.fair, this.threeColors][this.themeMode];
 
         for (let y = 0; y < glo.canvas.height; y++) {
@@ -50,16 +53,50 @@ export default class View
                 this.pixels[i + 3] = 255; // A
             }
         }
-        return new ImageData(this.pixels, glo.canvas.width, glo.canvas.height);
+        let img = new ImageData(this.pixels, glo.canvas.width, glo.canvas.height);
+        let co = this.offCanvas.getContext("2d");
+        co!.putImageData(img, 0, 0);
+        return this.offCanvas;
+        
     }
 
-    draw(doImage=true) {     
-        if (doImage) this.doImage(); 
-        this.ctx.putImageData(this.doImage(), 0, 0);
+    draw(newImage=true) {     
+        if (newImage) {
+            this.createImage();
+        } 
+        this.ctx.drawImage(this.offCanvas!, -glo.canvas.width/2, -glo.canvas.height/2)
         
         // html
         let log = Math.log10(this.model.K0 / this.model.scale).toFixed(0)
         glo.scaleSpan.innerHTML = `1 : 10<sup>${log}</sup>`;
+    }
+
+    drawAnime(canvX: number, canvY: number) {
+
+        let img = this.createImage();
+        let n = 8, c = this.ctx, Z = this.model.ZOOM_STEP;
+        // c.save()
+        // c.resetTransform();
+        // c.scale(1/this.model.ZOOM_STEP, 1/this.model.ZOOM_STEP)
+        // this.ctx.drawImage(img, 0, 0)
+        // c.restore()
+
+
+
+       
+        for (let i = 0; i <= n; i++) {
+            setTimeout(() => {
+                c.save()
+                c.resetTransform();
+                let sc = 1 / Z + i / n;
+                c.translate(0, glo.canvas.height * sc )
+                c.scale(sc, sc)
+                c.drawImage(img, 0, 0)
+                c.restore()
+                
+            }, 200 * i )
+        }
+         
     }
 
     drawGrayRect(canvX: number, canvY: number) {
@@ -79,7 +116,7 @@ export default class View
  // palettes:   https://color.romanuke.com/czvetovaya-palitra-4517/
 
     blackWhite(depth: number) {
-        return depth > this.model.avgDepth ? colors.dark : colors.light ;
+        return depth > this.model.avgDepth ? colors.dark : colors.light;        
     }
 
     zebra(depth: number) {

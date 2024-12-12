@@ -10,6 +10,7 @@ export default class Controller
     {
         let mousPos = {x: 0, y: 0 };
 
+        // canvas_mousedown
         glo.canvas.addEventListener('mousedown', (e: MouseEvent) => {
             mousPos.x = e.offsetX;
             mousPos.y = e.offsetY; 
@@ -23,27 +24,27 @@ export default class Controller
                 D < e.offsetY && e.offsetY < glo.canvas.height - D) {
                 view.drawGrayRect(e.offsetX, e.offsetY);
             }
-
             glo.deepSpan.innerHTML = model.getDeep(e.offsetX, e.offsetY).toString();      
         });
     
         // canvas_mouseup
         glo.canvas.addEventListener('mouseup', (e: MouseEvent) => {
             if (e.offsetX == mousPos.x) {
-                let zoom = e.altKey ? 1 / model.ZOOM_STEP : model.ZOOM_STEP
-                model.scaleWindow(e.offsetX, e.offsetY, zoom);
+                model.scaleScope(e.offsetX, e.offsetY);
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                view.drawAnime(e.offsetX, e.offsetY);
+                //view.draw();
             } else {
-                model.shift(mousPos.x - e.offsetX, mousPos.y - e.offsetY);
-                model.setDepths();
+                model.translateScope(mousPos.x - e.offsetX, mousPos.y - e.offsetY);
+                view.draw();
             }
-
-            view.draw();
+           
         });
     
         // deepText_change
         glo.deepText.addEventListener('change', () => {
             model.depthLimit = +glo.deepText.value;
-            model.setDepths();
+            model.translateScope(0, 0);
             view.draw();
         });
 
