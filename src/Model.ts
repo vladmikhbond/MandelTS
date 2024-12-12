@@ -2,7 +2,7 @@ import {glo} from "./globals.js";
 import Rect from "./Rect.js";
 export default class Model 
 {
-    ZOOM_STEP = 10;
+    ZOOM = 10;
     depthLimit = 1000;
     maxDepth = this.depthLimit;
     minDepth = 0;
@@ -35,11 +35,11 @@ export default class Model
     private setDepths() {
         this.minDepth = this.maxDepth = this.depthAt(0, 0);
         this.avgDepth = 0;
-        let k = this.scale;       
+        let scale = this.scale;       
         for (let y = 0; y < glo.canvas.height; y++) {
-            let scopeY = y * k + this.scope.y;
+            let scopeY = y * scale + this.scope.y;
             for (let x = 0; x < glo.canvas.width; x++) {
-                let scopeX = x * k + this.scope.x; 
+                let scopeX = x * scale + this.scope.x; 
                 let depth = this.depthAt(scopeX, scopeY);            
                 this.depths[y * glo.canvas.width + x] = depth;
                 if (this.minDepth > depth) this.minDepth = depth;
@@ -61,13 +61,13 @@ export default class Model
         return this.depthLimit;
     }
 
-    // scale a scope & fill depth matrix
+    // scale a scope & set depths matrix
     // 
     scaleScope(canvX: number, canvY: number) { 
         let centerX = canvX * this.scale + this.scope.x;   
         let centerY = canvY * this.scale + this.scope.y;
-        this.scope.w /= this.ZOOM_STEP;
-        this.scope.h /= this.ZOOM_STEP;
+        this.scope.w /= this.ZOOM;
+        this.scope.h /= this.ZOOM;
         this.scope.x = centerX - this.scope.w / 2;
         this.scope.y = centerY - this.scope.h / 2;
 

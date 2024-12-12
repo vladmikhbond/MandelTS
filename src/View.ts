@@ -74,7 +74,7 @@ export default class View
     drawAnime(canvX: number, canvY: number) {
 
         let img = this.createImage();
-        let n = 8, c = this.ctx, Z = this.model.ZOOM_STEP;
+        let n = 8, c = this.ctx, Z = this.model.ZOOM;
         // c.save()
         // c.resetTransform();
         // c.scale(1/this.model.ZOOM_STEP, 1/this.model.ZOOM_STEP)
@@ -104,8 +104,8 @@ export default class View
         canvX -= glo.canvas.width / 2;
         canvY = glo.canvas.height / 2 - canvY;
 
-        let w = glo.canvas.width / this.model.ZOOM_STEP;
-        let h = glo.canvas.height / this.model.ZOOM_STEP; 
+        let w = glo.canvas.width / this.model.ZOOM;
+        let h = glo.canvas.height / this.model.ZOOM; 
         let x = canvX - w / 2;
         let y = canvY - h / 2;
         this.ctx.strokeStyle = 'gray';
