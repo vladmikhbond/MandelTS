@@ -4,9 +4,8 @@ export default class Model
 {
     ZOOM = 10;
     depthLimit = 1000;
-    maxDepth = this.depthLimit;
-    minDepth = 0;
-    avgDepth = 0;
+    
+    
     
 
     scope: Rect;  
@@ -14,7 +13,11 @@ export default class Model
     depths: number[];
     
     K0: number;    // initial scale
-     
+    
+    maxDepth = 0;
+    minDepth = 0;
+    avgDepth = 0;
+
     constructor(init: Rect) {
         this.scope = init;
 
@@ -68,7 +71,7 @@ export default class Model
         return this.depthLimit;
     }
 
-    // scale a scope & set depths matrix
+    // scale the scope
     // 
     scaleScope(canvCenterX: number, canvCenterY: number) { 
         // from canv to scope
@@ -83,7 +86,7 @@ export default class Model
         this.setDepths();      
     }
 
-    // stranslate a scope & fill depth matrix
+    // stranslate the scope 
     // 
     translateScope(dCanvX: number, dCanvY: number) {
         this.scope.x += dCanvX * this.scale;

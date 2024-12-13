@@ -1,4 +1,4 @@
-import {glo, colors, str2rgb} from "./globals.js";
+import {glo, colors, str2rgb, distance} from "./globals.js";
 import Model from "./Model.js";
 import View from "./View.js";
 
@@ -29,11 +29,9 @@ export default class Controller
     
         // canvas_mouseup
         glo.canvas.addEventListener('mouseup', (e: MouseEvent) => {
-            if (e.offsetX == mousPos.x) {
+            if (distance(e.offsetX, e.offsetY, mousPos.x, mousPos.y) < 10) {
                 model.scaleScope(e.offsetX, e.offsetY);
-                ///////////////////////////////////////////////////////////////////////////////////////////
-                view.drawAnime(e.offsetX, e.offsetY);
-                //view.draw();
+                view.drawAnime();
             } else {
                 model.translateScope(mousPos.x - e.offsetX, mousPos.y - e.offsetY);
                 view.draw();

@@ -55,41 +55,34 @@ export default class View
         
     }
 
-    draw(newImage=true) {     
-        if (newImage) {
+    draw(renewImage=true) {     
+        if (renewImage) {
             this.createImage();
         } 
+        // on canvas
         this.ctx.drawImage(this.offCanvas!, 0, 0)
         
-        // html
+        // on html: current scale,
         let log = Math.log10(this.model.K0 / this.model.scale).toFixed(0)
         glo.scaleSpan.innerHTML = `1 : 10<sup>${log}</sup>`;
     }
 
-    drawAnime(canvX: number, canvY: number) {
+    drawAnime() {
 
         let img = this.createImage();
-        let n = 8, c = this.ctx, Z = this.model.ZOOM;
-        // c.save()
-        // c.resetTransform();
-        // c.scale(1/this.model.ZOOM_STEP, 1/this.model.ZOOM_STEP)
-        // this.ctx.drawImage(img, 0, 0)
-        // c.restore()
+        let n = 20, c = this.ctx, Z = this.model.ZOOM;
+        let ss = new Array(n);  // scales 
+        ss[0] = 1 / Z;
 
-
-
-       
-        for (let i = 0; i <= n; i++) {
+        for (let i = 1; i <= n; i++) {
+            ss[i] = ss[i - 1] +  (Z - 1) / (Z * n);
             setTimeout(() => {
-                c.save()
-                c.resetTransform();
-                let sc = 1 / Z + i / n;
-                c.translate(0, glo.canvas.height * sc )
-                c.scale(sc, sc)
+                c.save()                                
+                c.translate(glo.canvas.width * (1 - ss[i])/2 , glo.canvas.height * (1 - ss[i])/2 )
+                c.scale(ss[i], ss[i])
                 c.drawImage(img, 0, 0)
                 c.restore()
-                
-            }, 200 * i )
+            }, 10 * i )
         }
          
     }

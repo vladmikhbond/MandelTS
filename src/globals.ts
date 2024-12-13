@@ -32,3 +32,8 @@ export function str2rgb(color: string): number[] {
 export function rgb2str(arr: number[]): string {
     return '#' + arr.map(x => ('0' + x.toString(16)).slice(-2)).join('');
 }
+
+export function distance(x1:number, y1:number, x2:number, y2:number) {
+    let dx = x2 - x1, dy = y2 - y1;
+    return Math.sqrt(dx * dx - dy * dy);
+}

@@ -1,6 +1,8 @@
 // TODO
 
-arange the searh rectagle
+
+
+stack -  ctrl-z, ctrl-y
 
 // from canvas to scope
 let scopeX = canvX * scale + this.scope.x;
