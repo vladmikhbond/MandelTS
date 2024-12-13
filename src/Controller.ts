@@ -80,6 +80,16 @@ export default class Controller
             view.draw();
         }) 
 
+        document.addEventListener('keydown', (e) => {
+            // Перевірка, чи натиснуто Ctrl + Z
+            if (e.ctrlKey && e.key === 'z') {
+                
+                //event.preventDefault();
+                model.undo();
+                view.draw();
+            }
+        });
+
     }
 
 

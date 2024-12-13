@@ -63,7 +63,7 @@ export default class View
         this.ctx.drawImage(this.offCanvas!, 0, 0)
         
         // on html: current scale,
-        let log = Math.log10(this.model.K0 / this.model.scale).toFixed(0)
+        let log = Math.log10(this.model.initScale / this.model.scale).toFixed(0)
         glo.scaleSpan.innerHTML = `1 : 10<sup>${log}</sup>`;
     }
 

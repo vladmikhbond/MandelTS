@@ -1,41 +1,56 @@
 import {glo} from "./globals.js";
 import Rect from "./Rect.js";
 export default class Model 
-{
+{   
+    // 
     ZOOM = 10;
-    depthLimit = 1000;
-    
-    
-    
+    // scope window
+    scope: Rect; 
 
-    scope: Rect;  
-    
+    depthLimit = 1000;
+    // depths matrix
     depths: number[];
-    
-    K0: number;    // initial scale
-    
+    // depth bounds    
     maxDepth = 0;
     minDepth = 0;
     avgDepth = 0;
-
-    constructor(init: Rect) {
-        this.scope = init;
-
-        this.K0 = init.w / glo.canvas.width;
-        this.depths = new Array(glo.canvas.width * glo.canvas.height);  
-
-        this.setDepths();
-    }
-
-    // obtained scale
+    
+    // initial scale
+    initScale: number;    
+    // current scale
     get scale() { return this.scope.w / glo.canvas.width; }
     
+    undoStack: string[] = [];
+     // const copy = JSON.parse(JSON.stringify(original));
+    do() {
+        let json = JSON.stringify(this.scope);
+        this.undoStack.push(json);  
+    }
+
+    undo() {
+        if (this.undoStack.length > 0) {
+            let json = this.undoStack.pop()!;
+            this.scope = <Rect>JSON.parse(json);
+            this.fillDepths();
+        }  
+    }
+
+
+
+    constructor(initScope: Rect) {
+        this.scope = initScope;
+        this.initScale = initScope.w / glo.canvas.width;
+        this.depths = new Array(glo.canvas.width * glo.canvas.height);  
+        
+        this.fillDepths();
+    }
+
     
     getDeep(canvX: number, canvY: number) {
         return this.depths[canvY * glo.canvas.width + canvX] ?? 0;
     }
 
-    private setDepths() 
+    private fillDepths() 
     {
         this.minDepth = this.maxDepth = this.depthAt(0, 0);
         this.avgDepth = 0;
@@ -73,7 +88,9 @@ export default class Model
 
     // scale the scope
     // 
-    scaleScope(canvCenterX: number, canvCenterY: number) { 
+    scaleScope(canvCenterX: number, canvCenterY: number) 
+    { 
+        this.do();  
         // from canv to scope
         let scopeCenterX = canvCenterX * this.scale + this.scope.x;   
         let scopeCenterY = canvCenterY * this.scale + this.scope.y;
@@ -83,7 +100,7 @@ export default class Model
         this.scope.x = scopeCenterX - this.scope.w / 2;
         this.scope.y = scopeCenterY - this.scope.h / 2;
 
-        this.setDepths();      
+        this.fillDepths();  
     }
 
     // stranslate the scope 
@@ -92,7 +109,7 @@ export default class Model
         this.scope.x += dCanvX * this.scale;
         this.scope.y += dCanvY * this.scale;
 
-        this.setDepths();
+        this.fillDepths();
     }
 
 
@@ -102,7 +119,7 @@ export default class Model
 
     import(line: string) {
         this.scope = <Rect>JSON.parse(line);
-        this.setDepths();
+        this.fillDepths();
     }
 
 
