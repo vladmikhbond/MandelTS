@@ -1,7 +1,6 @@
 // TODO
 
-animation when image increases
-canvas transform get out
+arange the searh rectagle
 
 // from canvas to scope
 let scopeX = canvX * scale + this.scope.x;

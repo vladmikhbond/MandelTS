@@ -2,7 +2,7 @@ import {glo, colors, rgb2str} from "./globals.js";
 import Model from "./Model.js";
 
 enum ThemeMode {
-    twoColors = 0,
+    twoColors,
     zebra,
     fair,
     threecolors     
@@ -12,9 +12,8 @@ export default class View
 {
     model: Model;
     ctx = glo.canvas.getContext("2d")!;
-
     pixels: Uint8ClampedArray;
-    //private img: ImageData | null = null;
+
     offCanvas = new OffscreenCanvas(glo.canvas.width, glo.canvas.height)
     themeMode: ThemeMode = ThemeMode.twoColors;
 
@@ -23,10 +22,6 @@ export default class View
         
         glo.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.pixels = new Uint8ClampedArray(glo.canvas.width * glo.canvas.height * 4); // RGBA
-        
-        // transform canvas
-        this.ctx.translate(glo.canvas.width / 2, glo.canvas.height / 2);
-        this.ctx.scale(1, -1);
 
         // setup index.html
         glo.darkColor.value = rgb2str(colors.dark);
@@ -64,7 +59,7 @@ export default class View
         if (newImage) {
             this.createImage();
         } 
-        this.ctx.drawImage(this.offCanvas!, -glo.canvas.width/2, -glo.canvas.height/2)
+        this.ctx.drawImage(this.offCanvas!, 0, 0)
         
         // html
         let log = Math.log10(this.model.K0 / this.model.scale).toFixed(0)
@@ -100,16 +95,13 @@ export default class View
     }
 
     drawGrayRect(canvX: number, canvY: number) {
-        // retransform
-        canvX -= glo.canvas.width / 2;
-        canvY = glo.canvas.height / 2 - canvY;
 
         let w = glo.canvas.width / this.model.ZOOM;
         let h = glo.canvas.height / this.model.ZOOM; 
         let x = canvX - w / 2;
         let y = canvY - h / 2;
-        this.ctx.strokeStyle = 'gray';
-        this.ctx.strokeRect(x, y, w, h);
+        this.ctx.fillStyle = 'rgba(255,255,255, 0.25)';
+        this.ctx.fillRect(x, y, w, h);
     }
 
 //#region Themes ----------------------

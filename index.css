@@ -1,6 +1,7 @@
 #canvas {
-    cursor: crosshair;
+    cursor:none;
     border: thin solid;
+    /* cursor: crosshair; */
 }
 
 input {

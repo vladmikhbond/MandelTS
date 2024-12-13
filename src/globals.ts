@@ -20,7 +20,7 @@ export const colors = {
     third: [0, 0, 255],
 };
 
-// '#rrggbb' => [r, g, b]
+// convert: '#rrggbb' => [r, g, b]
 export function str2rgb(color: string): number[] {
     let r = parseInt((color.slice(1, 3)), 16);
     let g = parseInt((color.slice(3, 5)), 16);
@@ -28,7 +28,7 @@ export function str2rgb(color: string): number[] {
     return [r, g, b];
 }
 
-// [r, g, b] => '#rrggbb'
+// convert: [r, g, b] => '#rrggbb'
 export function rgb2str(arr: number[]): string {
     return '#' + arr.map(x => ('0' + x.toString(16)).slice(-2)).join('');
 }
