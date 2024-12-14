@@ -1,22 +1,40 @@
-import {glo, colors, rgb2str} from "./globals.js";
+import {glo} from "./globals.js";
 import Model from "./Model.js";
 
-enum ThemeMode {
+export enum ThemeMode {
     twoColors,
     zebra,
-    fair,
     threecolors     
 }
+export const colors = {
+    dark: [0, 0, 0],
+    light: [255, 0, 0],
+    third: [0, 0, 255],
+};
 
-export default class View 
+// convert: '#rrggbb' => [r, g, b]
+export function str2rgb(color: string): number[] {
+    let r = parseInt((color.slice(1, 3)), 16);
+    let g = parseInt((color.slice(3, 5)), 16);
+    let b = parseInt((color.slice(5, 7)), 16);
+    return [r, g, b];
+}
+
+// convert: [r, g, b] => '#rrggbb'
+export function rgb2str(arr: number[]): string {
+    return '#' + arr.map(x => ('0' + x.toString(16)).slice(-2)).join('');
+}
+
+export class View 
 {
     model: Model;
     ctx = glo.canvas.getContext("2d")!;
+
     pixels: Uint8ClampedArray;
 
     offCanvas = new OffscreenCanvas(glo.canvas.width, glo.canvas.height)
     themeMode: ThemeMode = ThemeMode.twoColors;
-
+    
     constructor(model: Model) {
         this.model = model;
         
@@ -24,16 +42,16 @@ export default class View
         this.pixels = new Uint8ClampedArray(glo.canvas.width * glo.canvas.height * 4); // RGBA
 
         // setup index.html
-        glo.darkColor.value = rgb2str(colors.dark);
-        glo.lightColor.value = rgb2str(colors.light);
-        glo.thirdColor.value = rgb2str(colors.third);
-        glo.themes[this.themeMode].checked = true;
+        glo.darkInputColor.value = rgb2str(colors.dark);
+        glo.lightInputColor.value = rgb2str(colors.light);
+        glo.thirdInputColor.value = rgb2str(colors.third);
+        glo.themeRButtons[this.themeMode].checked = true;
         glo.deepText.value = model.depthLimit.toFixed(0);
         
     }
 
     createImage() { 
-        const getColor = [this.blackWhite, this.zebra, this.fair, this.threeColors][this.themeMode];
+        const getColor = [this.blackWhite, this.zebra, this.threeColors][this.themeMode];
 
         for (let y = 0; y < glo.canvas.height; y++) {
             let shift = 4 * y * glo.canvas.width;
@@ -68,7 +86,6 @@ export default class View
     }
 
     drawAnime() {
-
         let img = this.createImage();
         let n = 20, c = this.ctx, Z = this.model.ZOOM;
         let ss = new Array(n);  // scales 
@@ -95,28 +112,38 @@ export default class View
         let y = canvY - h / 2;
         this.ctx.fillStyle = 'rgba(255,255,255, 0.25)';
         this.ctx.fillRect(x, y, w, h);
+        this.ctx.strokeStyle = 'white';
+        this.ctx.strokeRect(x+w/2, y+h/2, 0.5, 0.5);
     }
 
 //#region Themes ----------------------
- // palettes:   https://color.romanuke.com/czvetovaya-palitra-4517/
+ 
+
+    // https://color.romanuke.com/czvetovaya-palitra-4517/      
+ 
+    paletteBase = [ ' #000000 #FFFFFF',
+        ' #F90627 #FD694B #EBEFB1 #E1DFE2',
+        ' #E1DFE2 #EBEFB1 #829A41 #FD694B #F90627',
+        ' #251f10 #5e6b34 #aabba8 #c1c729 #748501',
+    ];
+
+    private currentPalette: number[][] = [[]]; 
+    private fairPaletteIndex = 0;
 
     blackWhite(depth: number) {
-        return depth > this.model.avgDepth ? colors.dark : colors.light;        
+        return depth == this.model.depthLimit ? colors.dark : colors.light; 
     }
 
-    zebra(depth: number) {
-        return [colors.light, colors.third][depth % 2];
+    nextPalette() {
+        this.fairPaletteIndex = (this.fairPaletteIndex + 1) % this.paletteBase.length;
+        this.currentPalette = 
+            this.paletteBase[this.fairPaletteIndex]
+            .trim().split(' ')
+            .map(str2rgb);
     }
 
-   
-    fair(depth: number) {
-        const cols = [ 
-            [0xF9, 0x06, 0x27],
-            [0xFD, 0x69, 0x4B],
-            [0xEB, 0xEF, 0xB1],
-            [0xE1, 0xDF, 0xE2],            
-        ];
-        return cols[depth % cols.length];
+    zebra(depth: number) {       
+        return this.currentPalette[depth % this.currentPalette.length];
     }
 
     threeColors(depth: number)
@@ -132,8 +159,6 @@ export default class View
         let b = (b1 * k + b2 * (1 - k)) | 0;
         return [r, g, b];
     }
-
-
 
 //#endregion
 

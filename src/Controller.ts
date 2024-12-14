@@ -1,11 +1,9 @@
-import {glo, colors, str2rgb, distance} from "./globals.js";
+import {glo, distance} from "./globals.js";
 import Model from "./Model.js";
-import View from "./View.js";
+import {View, colors, str2rgb, ThemeMode} from "./View.js";
 
 export default class Controller 
 {
-    
-
     constructor(model: Model, view: View) 
     {
         let mousPos = {x: 0, y: 0 };
@@ -47,29 +45,34 @@ export default class Controller
         });
 
         // 
-        glo.darkColor.addEventListener('change', () => {
-            colors.dark = str2rgb(glo.darkColor.value);
+        glo.darkInputColor.addEventListener('change', () => {
+            colors.dark = str2rgb(glo.darkInputColor.value);
             view.draw();
         });
 
         // 
-        glo.lightColor.addEventListener('change', () => {
-            colors.light = str2rgb(glo.lightColor.value);
+        glo.lightInputColor.addEventListener('change', () => {
+            colors.light = str2rgb(glo.lightInputColor.value);
             view.draw();
         });
 
         // 
-        glo.thirdColor.addEventListener('change', () => {
-            colors.third = str2rgb(glo.thirdColor.value);
+        glo.thirdInputColor.addEventListener('change', () => {
+            colors.third = str2rgb(glo.thirdInputColor.value);
             view.draw();
         });
+        
 
-        for (const t of glo.themes) {
-            t.addEventListener('click', (e) => {
+        for (const rButton of glo.themeRButtons) {
+            rButton.addEventListener('click', (e) => {
                 view.themeMode = +(e.target as HTMLInputElement).value;
+                if (rButton == glo.themeRButtons[ThemeMode.zebra]) {                    
+                    view.nextPalette();
+                }
                 view.draw();
             });
         }
+
         
         glo.exportButton.addEventListener('click', () => {
             glo.exportText.value = model.export();
