@@ -24,7 +24,7 @@ export default class Controller
                 D < e.offsetY && e.offsetY < glo.canvas.height - D) {
                 view.drawGrayRect(e.offsetX, e.offsetY);
             }
-            glo.deepSpan.innerHTML = model.getDeep(e.offsetX, e.offsetY).toString();      
+            glo.deepSpan.innerHTML = model.canvasDepthAt(e.offsetX, e.offsetY);            
         });
     
         // canvas_mouseup
@@ -80,10 +80,11 @@ export default class Controller
             view.draw();
         }) 
 
-        document.addEventListener('keydown', (e) => {
+        glo.canvas.addEventListener('keydown', (e) => {
+            console.log(e.key)
             // Перевірка, чи натиснуто Ctrl + Z
-            if (e.ctrlKey && e.key === 'z') {
-                
+            if (e.ctrlKey && 'zZяЯ'.includes(e.key) ) {
+                console.log('Ctrl + Z')
                 //event.preventDefault();
                 model.undo();
                 view.draw();

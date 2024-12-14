@@ -52,7 +52,7 @@ export default class Model
 
     private fillDepths() 
     {
-        this.minDepth = this.maxDepth = this.depthAt(0, 0);
+        this.minDepth = this.maxDepth = Model.measureDepthAt(0, 0, this.depthLimit);
         this.avgDepth = 0;
         let scale = this.scale;       
         for (let canvY = 0; canvY < glo.canvas.height; canvY++) 
@@ -63,7 +63,7 @@ export default class Model
             {
                 // from canv to scope
                 let scopeX = canvX * scale + this.scope.x; 
-                let depth = this.depthAt(scopeX, scopeY);            
+                let depth = Model.measureDepthAt(scopeX, scopeY, this.depthLimit);            
                 this.depths[canvY * glo.canvas.width + canvX] = depth;
                 
                 // max min avg
@@ -76,15 +76,26 @@ export default class Model
     }
 
 
-    depthAt(scopeX: number, scopeY: number) {
+    static measureDepthAt(scopeX: number, scopeY: number, limit:number) {
         let re = scopeX, im = scopeY;
-        for (let d = 0; d < this.depthLimit; d++) {
+        for (let d = 0; d < limit; d++) {
             [re, im] = [re * re - im * im + scopeX, 2 * re * im + scopeY];
             if ((re * re) + (im * im) > 4)
                 return d;
         }
-        return this.depthLimit;
+        return limit;
     }
+
+    canvasDepthAt(canvX: number, canvY: number): string {
+        // from canv to scope
+        let scopeX = canvX * this.scale + this.scope.x;
+        let scopeY = canvY * this.scale + this.scope.y;
+
+        const INF = 1e6;
+        let deep = Model.measureDepthAt(scopeX, scopeY, INF); 
+        return deep == INF ? '∞' : deep.toString();
+    }
+    
 
     // scale the scope
     // 
