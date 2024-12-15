@@ -33,8 +33,7 @@ export default class Controller
             } else {
                 model.translateScope(mousPos.x - e.offsetX, mousPos.y - e.offsetY);
                 view.draw();
-            }
-           
+            }           
         });
     
         // deepText_change
@@ -44,25 +43,25 @@ export default class Controller
             view.draw();
         });
 
-        // 
+        // dark color_change
         glo.darkInputColor.addEventListener('change', () => {
             colors.dark = str2rgb(glo.darkInputColor.value);
             view.draw();
         });
 
-        // 
+        // light color_change
         glo.lightInputColor.addEventListener('change', () => {
             colors.light = str2rgb(glo.lightInputColor.value);
             view.draw();
         });
 
-        // 
+        // third color_change
         glo.thirdInputColor.addEventListener('change', () => {
             colors.third = str2rgb(glo.thirdInputColor.value);
             view.draw();
         });
         
-
+        // radioButtons_click 
         for (const rButton of glo.themeRButtons) {
             rButton.addEventListener('click', (e) => {
                 view.themeMode = +(e.target as HTMLInputElement).value;
@@ -73,26 +72,33 @@ export default class Controller
             });
         }
 
-        
+        // exportButton_click
         glo.exportButton.addEventListener('click', () => {
             glo.exportText.value = model.export();
         }) 
 
+        // importButton_click
         glo.importButton.addEventListener('click', () => {
             model.import(glo.exportText.value);
             view.draw();
         }) 
 
+        // canvas_keydown
         glo.canvas.addEventListener('keydown', (e) => {
             console.log(e.key)
-            // Перевірка, чи натиснуто Ctrl + Z
+            // Check if Ctrl+Z pressed
             if (e.ctrlKey && 'zZяЯ'.includes(e.key) ) {
                 console.log('Ctrl + Z')
-                //event.preventDefault();
                 model.undo();
                 view.draw();
             }
         });
+
+        // helpButton_click
+        glo.helpButton.addEventListener('click', () => {
+            glo.helpDiv.style.display = glo.helpDiv.style.display != 'block' ? 'block' : 'none';
+        }) 
+
 
     }
 

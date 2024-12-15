@@ -11,6 +11,8 @@ export const glo = {
     importButton: <HTMLButtonElement>document.getElementById("importButton"),
     exportText: <HTMLInputElement>document.getElementById('exportText'),
     importText: <HTMLInputElement>document.getElementById('importText'),
+    helpButton: <HTMLButtonElement>document.getElementById("helpButton"),
+    helpDiv: <HTMLDivElement>document.getElementById('helpDiv'),
 };
 
 

@@ -1,12 +1,10 @@
 #canvas {
-    cursor:none;
+    cursor: none;
     border: thin solid;
-    /* cursor: crosshair; */
 }
 
 input {
-    height: 18px;
-    
+    height: 18px;    
 }
 
 input[type="color"] {
@@ -33,9 +31,9 @@ input[type="color"] {
 #deepSpan{
     color: gray;
     font-size: small;
-    width: 40px;
+    width: 50px;
     display: inline-block;
-    text-align: right;
+    text-align: left;
 }
 
 #scaleSpan {
@@ -55,3 +53,18 @@ h3 {
     cursor: pointer;
     color: red;
 }
+
+#helpButton {
+    background-color: transparent;
+    color: blue;
+    border: none;
+    font-size: small;
+    margin-left: 150px;
+}
+
+#helpDiv {
+    width: 600px;
+    font-size: small;
+    display: none;
+}
+

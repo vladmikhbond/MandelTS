@@ -2,7 +2,7 @@ import {glo} from "./globals.js";
 import Rect from "./Rect.js";
 export default class Model 
 {   
-    // 
+    // zoom for the one click
     ZOOM = 10;
     // scope window
     scope: Rect; 
@@ -21,7 +21,7 @@ export default class Model
     get scale() { return this.scope.w / glo.canvas.width; }
     
     undoStack: string[] = [];
-     // const copy = JSON.parse(JSON.stringify(original));
+
     do() {
         let json = JSON.stringify(this.scope);
         this.undoStack.push(json);  
@@ -35,8 +35,6 @@ export default class Model
         }  
     }
 
-
-
     constructor(initScope: Rect) {
         this.scope = initScope;
         this.initScale = initScope.w / glo.canvas.width;
@@ -44,7 +42,6 @@ export default class Model
         
         this.fillDepths();
     }
-
     
     getDeep(canvX: number, canvY: number) {
         return this.depths[canvY * glo.canvas.width + canvX] ?? 0;
@@ -75,7 +72,6 @@ export default class Model
         this.avgDepth /= this.depths.length;
     }
 
-
     static measureDepthAt(scopeX: number, scopeY: number, limit:number) {
         let re = scopeX, im = scopeY;
         for (let d = 0; d < limit; d++) {
@@ -96,7 +92,6 @@ export default class Model
         return deep == INF ? '∞' : deep.toString();
     }
     
-
     // scale the scope
     // 
     scaleScope(canvCenterX: number, canvCenterY: number) 
@@ -123,7 +118,6 @@ export default class Model
         this.fillDepths();
     }
 
-
     export(): string {
         return JSON.stringify(this.scope);
     }
@@ -132,7 +126,5 @@ export default class Model
         this.scope = <Rect>JSON.parse(line);
         this.fillDepths();
     }
-
-
 
 } 

@@ -1,5 +1,9 @@
 // TODO
 
+help
+depth slider
+
+
 // from canvas to scope
 let scopeX = canvX * scale + this.scope.x;
 

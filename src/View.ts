@@ -6,6 +6,7 @@ export enum ThemeMode {
     zebra,
     threecolors     
 }
+
 export const colors = {
     dark: [0, 0, 0],
     light: [255, 0, 0],
@@ -69,8 +70,7 @@ export class View
         let img = new ImageData(this.pixels, glo.canvas.width, glo.canvas.height);
         let co = this.offCanvas.getContext("2d");
         co!.putImageData(img, 0, 0);
-        return this.offCanvas;
-        
+        return this.offCanvas;     
     }
 
     draw(renewImage=true) {     
@@ -82,7 +82,7 @@ export class View
         
         // on html: current scale,
         let log = Math.log10(this.model.initScale / this.model.scale).toFixed(0)
-        glo.scaleSpan.innerHTML = `1 : 10<sup>${log}</sup>`;
+        glo.scaleSpan.innerHTML = `S 1:10<sup>${log}</sup>`;
     }
 
     drawAnime() {
